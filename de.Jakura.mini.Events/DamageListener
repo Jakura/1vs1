@@ -1,0 +1,62 @@
+package de.Jakura.mini.Events;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+
+import de.Jakura.mini.APIs.ItemAPI;
+import de.Jakura.mini.APIs.TitleAPI;
+import de.Jakura.mini.Main.main;
+import de.Jakura.mini.MySQL.MySQL_Stats;
+
+public class DamageListener implements Listener {
+
+	private main main;
+	
+	public DamageListener(main main) {
+		this.main = main;
+		this.main.getServer().getPluginManager().registerEvents(this, main);
+	}
+	
+	@SuppressWarnings("static-access")
+	@EventHandler
+	public void onKill(PlayerDeathEvent e) {
+		Player p = e.getEntity();
+		Player killer = p.getKiller();
+
+		
+		
+		if(main.inGame.contains(p.getName()) && main.inGame.contains(killer.getName())) {
+			
+			e.setDeathMessage(null);
+			e.setKeepInventory(true);
+			e.getDrops().clear();
+			e.setDroppedExp(20);
+			
+			killer.sendMessage(main.prefix + "§aDu hast das 1v1 gegen §6" + p.getName() + " §aGewonnen!");
+			MySQL_Stats.setKills(killer.getName(), MySQL_Stats.getKills(killer.getName()) + 1);
+			MySQL_Stats.setPoints(killer.getName(), MySQL_Stats.getPoints(killer.getName()) + MySQL_Stats.getKills(killer.getName()) + 3);
+			MySQL_Stats.setPlayedRounds(killer.getName(), MySQL_Stats.getPlayedRounds(killer.getName()) +1);
+			killer.getInventory().addItem(ItemAPI.createItemWith(Material.DIAMOND, 3, 0, ""));
+			TitleAPI.sentTitle(killer, "§aGewonnen");
+			
+			
+			p.sendMessage(main.prefix + "§cDu hast das 1v1 gegen §6" + killer.getName() + " §cVerloren!");
+			MySQL_Stats.setTode(p.getName(), MySQL_Stats.getTode(p.getName()) + 1);
+			MySQL_Stats.setPoints(p.getName(), MySQL_Stats.getPoints(p.getName()) + 2);
+			MySQL_Stats.setPlayedRounds(p.getName(), MySQL_Stats.getPlayedRounds(p.getName()) +1);
+			TitleAPI.sentTitle(p, "§cVerloren");
+			
+			
+			main.inGame.remove(p.getName());
+			main.inGame.remove(killer.getName());
+			
+			Bukkit.reload();
+		}
+		
+	}
+	
+}
