@@ -1,0 +1,73 @@
+package de.Jakura.mini.Commands;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import de.Jakura.mini.Main.main;
+import de.Jakura.mini.MySQL.MySQL_Stats;
+
+public class Stats_CMD implements CommandExecutor {
+
+	private main main;
+	
+	public Stats_CMD(main main) {
+		this.main = main;
+	}
+
+	@Override
+	public boolean onCommand(CommandSender s,  Command cmd,  String arg2, String[] args) {
+		
+		if(s instanceof Player) {
+			
+			if(cmd.getName().equalsIgnoreCase("stats")) {
+				
+				Player p = (Player) s;
+				
+				
+				
+				if(args.length == 1) {
+					
+					String pn = args[0];
+					Player p2 = Bukkit.getPlayerExact(pn);
+					
+					if(!(p2 == p)) {
+						if(!(p2 == null)) {
+							
+							p.sendMessage(main.prefix + "§7=============<§e"+p2.getName()+"§7>=============");
+							p.sendMessage(main.prefix + "§7Kills: §e" + MySQL_Stats.getKills(p2.getName()));
+							p.sendMessage(main.prefix + "§7Tode: §e" + MySQL_Stats.getTode(p2.getName()));
+							p.sendMessage(main.prefix + "§7Punkte: §e" + MySQL_Stats.getPoints(p2.getName()));
+							p.sendMessage(main.prefix + "§7Gespielte Runden: §e" + MySQL_Stats.getPlayedRounds(p2.getName()));
+							p.sendMessage(main.prefix + "§7=============<§e"+p2.getName()+"§7>=============");
+							
+						} else {
+							
+						}
+					} else {
+						
+						p.sendMessage(main.prefix + "§7=============<§e"+p.getName()+"§7>=============");
+						p.sendMessage(main.prefix + "§7Kills: §e" + MySQL_Stats.getKills(p.getName()));
+						p.sendMessage(main.prefix + "§7Tode: §e" + MySQL_Stats.getTode(p.getName()));
+						p.sendMessage(main.prefix + "§7Punkte: §e" + MySQL_Stats.getPoints(p.getName()));
+						p.sendMessage(main.prefix + "§7Gespielte Runden: §e" + MySQL_Stats.getPlayedRounds(p.getName()));
+						p.sendMessage(main.prefix + "§7=============<§e"+p.getName()+"§7>=============");
+						
+					}
+					
+				}
+				
+			}
+			
+		} else {
+			s.sendMessage(main.prefix + "§cDu musst ein Spieler Sein!");
+		}
+		
+		return false;
+	}
+	
+	
+	
+}
