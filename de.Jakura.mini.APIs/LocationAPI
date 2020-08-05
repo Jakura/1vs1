@@ -1,0 +1,57 @@
+package de.Jakura.mini.APIs;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+
+public class LocationAPI {
+
+	
+	
+	public static File file = new File("plugins/1vs1", "Locations.yml");
+	public static FileConfiguration cfg = YamlConfiguration.loadConfiguration(file);
+	
+	public static void setLocation(String locName, Player p) {
+		
+		String world = p.getWorld().getName();
+		double x = p.getLocation().getX();
+		double y = p.getLocation().getY();
+		double z = p.getLocation().getZ();
+		double yaw = p.getLocation().getYaw();
+		double pitch = p.getLocation().getPitch();
+		
+		cfg.set(locName + ".Welt", world);
+		cfg.set(locName + ".X", x);
+		cfg.set(locName + ".Y", y);
+		cfg.set(locName + ".Z", z);
+		cfg.set(locName + ".Yaw", yaw);
+		cfg.set(locName + ".Pitch", pitch);
+		
+		try {
+			cfg.save(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static Location getLocation(String locName) {
+		
+		double x = cfg.getDouble(locName+ ".X");
+		double y = cfg.getDouble(locName+ ".Y");
+		double z = cfg.getDouble(locName+ ".Z");
+		
+		World w = Bukkit.getWorld(cfg.getString(locName + ".Welt"));
+		
+		Location loc = new Location(w, x, y, z);
+		loc.setYaw(cfg.getInt(locName + ".Yaw"));
+		loc.setPitch(cfg.getInt(locName + ".Pitch"));
+		
+		return loc;
+	}
+}
