@@ -1,0 +1,86 @@
+package de.Jakura.mini.Main;
+
+import java.util.ArrayList;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import de.Jakura.mini.Commands.Invite_CMD;
+import de.Jakura.mini.Commands.Stats_CMD;
+import de.Jakura.mini.Commands.set_CMD;
+import de.Jakura.mini.Events.DamageListener;
+import de.Jakura.mini.Events.JoinListener;
+import de.Jakura.mini.Events.MoveListener;
+import de.Jakura.mini.MySQL.MySQL;
+
+
+public class main extends JavaPlugin {
+
+	
+	public static ArrayList<String> inGame = new ArrayList<String>();
+	
+	public static ArrayList<String> inVor = new ArrayList<String>();
+	
+	public static ArrayList<String> Invite = new ArrayList<String>();
+	
+	public static boolean mys = false;
+	
+	String HOST = getConfig().getString("MySQL.Hostname");
+	String PORT = getConfig().getString("MySQL.Port");
+	String DATA = getConfig().getString("MySQL.Database");
+	String PASW = getConfig().getString("MySQL.Password");
+	String USER = getConfig().getString("MySQL.Username");
+	
+	public String prefix = ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("Prefix"));
+	
+	@Override
+	public void onEnable() {
+		
+		mys = getConfig().get("MySQL.Activated") != null ? getConfig().getBoolean("MySQL.Activated") : false;
+		
+		if (mys == true) {
+			Bukkit.getConsoleSender().sendMessage(prefix + "§6MySQL §aActivated.");
+
+			new MySQL(HOST, PORT, DATA, USER, PASW);
+			
+			LoadConfig();
+			LoadEvents();
+			LoadCMDs();
+			
+			Bukkit.getConsoleSender().sendMessage(prefix + "§6Plugin version §a" + this.getDescription().getVersion() + " §ageladen.");
+			
+		}  else {
+			Bukkit.getConsoleSender().sendMessage(prefix + "§6MySQL is §cDisabled. Activated MySQL in 'config.yml' file for Starting this Server!");
+			//Bukkit.shutdown();
+		}
+		
+		
+	}
+	
+	@Override
+	public void onDisable() {
+		Bukkit.getConsoleSender().sendMessage(prefix + "§6Plugin version §a" + this.getDescription().getVersion() + " §cgestopt.");
+	}
+	
+	public void LoadConfig() {
+		getConfig().options().copyDefaults(true);
+		saveConfig();
+	}
+	public void LoadEvents() {
+		new JoinListener(this);
+		new MoveListener(this);
+		new DamageListener(this);
+	}
+	public void LoadCMDs() {
+		getCommand("setloc").setExecutor(new set_CMD(this));
+		
+		getCommand("accept").setExecutor(new Invite_CMD(this));
+		
+		getCommand("deny").setExecutor(new Invite_CMD(this));
+		
+		getCommand("invite").setExecutor(new Invite_CMD(this));
+		
+		getCommand("stats").setExecutor(new Stats_CMD(this));
+	}
+}
