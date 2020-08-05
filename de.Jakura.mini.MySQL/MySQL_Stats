@@ -1,0 +1,163 @@
+package de.Jakura.mini.MySQL;
+
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+
+
+
+public class MySQL_Stats {
+
+	public static boolean playerExists(String Name) {
+
+		ResultSet rs = MySQL.getResult("SELECT * FROM "+ MySQL.table + " WHERE Name = '" + Name + "' ");
+        try {
+            if(rs.next()) {
+                return rs.getString("Name") != null;
+                
+            }
+            Bukkit.getConsoleSender().sendMessage("§aDer Spieler wurde Erfolgreich Erstellt");
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Bukkit.getConsoleSender().sendMessage("§cDer Spieler konnte Nicht Geladen werden");
+        }
+        return false;
+    }
+	  
+	  //CREATE PLAYER
+	  
+
+	    public static void createPlayer(String Name) {
+	        if(!(playerExists(Name))) {
+	        	MySQL.update("INSERT INTO "+ MySQL.table + " (Name, UUID, Kills, Tode, Points) VALUES ('" + Name  + "','?', '0', '0', '0', '0');");
+	            return;
+	        } else {
+	        }
+	    }
+	    
+	    public static void createPlayerwithuuid(Player p) {
+	        if(!(playerExists(p.getName()))) {
+	            MySQL.update("INSERT INTO "+ MySQL.table + " (Name, UUID, Kills, Tode, Points) VALUES ('" + p.getName() + "','" + p.getUniqueId().toString() + "', '0', '0', '0', '0');");
+	            return;
+	        } else {
+	        	// MySQL.update("INSERT INTO "+ MySQL.table + " (Name, UUID, Kills, Tode, Points) VALUES ('" + p.getName() + "','" + p.getUniqueId().toString() + "', '0', '0', '0');");
+	        }
+	    }
+	    
+	    //GET
+	    public static int getTode(String Name) {
+	        int i = 0;
+	        if(playerExists(Name)) {
+	            ResultSet rs = MySQL.getResult("SELECT * FROM " + MySQL.table + " WHERE Name = '" + Name + "';");
+	            try {
+	                if((!rs.next()) || (Integer.valueOf(rs.getInt(MySQL.tod)) == null));
+	                i = rs.getInt(MySQL.tod);
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }else {
+	            createPlayer(Name);
+	            getTode(Name);
+	        }
+	        return i;
+	    }
+	    public static int getKills(String Name) {
+	        int i = 0;
+	        if(playerExists(Name)) {
+	            ResultSet rs = MySQL.getResult("SELECT * FROM " + MySQL.table + " WHERE Name = '" + Name + "';");
+	            try {
+	                 if((!rs.next()) || (Integer.valueOf(rs.getInt(MySQL.kill)) == null));
+	                 	i = rs.getInt(MySQL.kill);
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }else {
+	            createPlayer(Name);
+	            getKills(Name);
+	        }
+	        return i;
+	    }
+	    public static int getPlayedRounds(String Name) {
+	        int i = 0;
+	        if(playerExists(Name)) {
+	            ResultSet rs = MySQL.getResult("SELECT * FROM " + MySQL.table + " WHERE Name = '" + Name + "';");
+	            try {
+	                 if((!rs.next()) || (Integer.valueOf(rs.getInt(MySQL.played)) == null));
+	                 	i = rs.getInt(MySQL.played);
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }else {
+	            createPlayer(Name);
+	            getPlayedRounds(Name);
+	        }
+	        return i;
+	    }
+	    public static int getPoints(String Name) {
+	        int i = 0;
+	        if(playerExists(Name)) {
+	            ResultSet rs = MySQL.getResult("SELECT * FROM " + MySQL.table + " WHERE Name = '" + Name + "';");
+	            try {
+	                 if((!rs.next()) || (Integer.valueOf(rs.getInt(MySQL.point)) == null));
+	                 	i = rs.getInt(MySQL.point);
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }else {
+	            createPlayer(Name);
+	            getPoints(Name);
+	        }
+	        return i;
+	    }
+
+	    //SET
+	    
+	    public static void setKills(String Name , int Kills) {
+	        if(playerExists(Name)) {
+
+	            MySQL.update("UPDATE " + MySQL.table + " SET Kills = '" + Kills + "' WHERE Name = '" + Name + "';");
+
+	        }else {
+	            createPlayer(Name);
+	            setKills(Name , Kills);
+	        }
+	    }
+	    public static void setPlayedRounds(String Name , int PlayedRounds) {
+	        if(playerExists(Name)) {
+
+	            MySQL.update("UPDATE " + MySQL.table + " SET PlayedRounds = '" + PlayedRounds + "' WHERE Name = '" + Name + "';");
+
+	        }else {
+	            createPlayer(Name);
+	            setPlayedRounds(Name , PlayedRounds);
+	        }
+	    }
+
+	    public static void setTode(String Name , int Tode) {
+	        if(playerExists(Name)) {
+
+	            MySQL.update("UPDATE " + MySQL.table + " SET Tode = '" + Tode + "' WHERE Name = '" + Name + "';");
+
+	        }else {
+	            createPlayer(Name);
+	            setTode(Name , Tode);
+	        }
+	    }
+	    public static void setPoints(String Name , int Points) {
+	        if(playerExists(Name)) {
+
+	            MySQL.update("UPDATE " + MySQL.table + " SET Points = '" + Points + "' WHERE Name = '" + Name + "';");
+
+	        }else {
+	            createPlayer(Name);
+	            setTode(Name , Points);
+	        }
+	    }
+	
+	
+}
