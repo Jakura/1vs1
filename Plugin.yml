@@ -1,0 +1,17 @@
+name: 1vs1
+version: 0.1.0
+author: Jakura
+main: de.Jakura.mini.Main.main
+api-version: 1.13
+
+commands:
+     setloc:
+          description: setze die spawn Location
+     accept:
+          description: akzeptiere die Einladung
+     deny:
+          description: Lehne die Einladung ab
+     invite:
+          description: Lade ein Spieler zum 1v1 ein.
+     stats:
+          description: Siehe deine Stats.
