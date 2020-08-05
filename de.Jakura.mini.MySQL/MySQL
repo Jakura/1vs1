@@ -1,0 +1,115 @@
+package de.Jakura.mini.MySQL;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.bukkit.Bukkit;
+
+import de.Jakura.mini.Main.main;
+
+
+
+public class MySQL {
+	
+	public static String uuid = "UUID";
+	public static String table = "1v1_";
+	
+	public static String kill = "Kills";
+	public static String tod = "Tode";
+	public static String point = "Points";
+	public static String played = "PlayedRounds";
+	
+	public main main;
+
+	private static String HOST;
+
+	private static String PORT;
+
+	private static String DATABASE;
+
+	private static String USER;
+
+	private static String PASSWORD;
+	private static Connection con;
+	
+	public static String myPre = "§7[§6MySQL§7] ";
+	
+	public MySQL(String host, String port, String database, String user, String password) {
+		HOST = host;
+		PORT = port;
+		DATABASE = database;
+		USER = user;
+		PASSWORD = password;
+		
+		connect();
+		createTable();
+	}
+
+
+	private static void connect() {
+		
+		try {
+			
+			con = DriverManager.getConnection("jdbc:mysql://" + HOST + ":" + PORT +  "/" + DATABASE + "?autoReconnect=true", USER, PASSWORD);
+			Bukkit.getConsoleSender().sendMessage("§7[§6MySQL§7] §aVerbindung Hergestellt!");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			Bukkit.getConsoleSender().sendMessage("§7[§6MySQL§7] §cEs ist ein Fehler unterlaufen " + e.getMessage());
+			Bukkit.shutdown();
+		}
+		
+	}
+	public static void close() {
+		
+		try {
+			
+			if(con != null) {
+				con.close();
+				Bukkit.getConsoleSender().sendMessage("§7[§6MySQL§7] §cVerbindung getrennt!");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static boolean isConnected() {
+        return (con != null);
+    }
+	
+	 public static void createTable() {
+	        if(isConnected()) {
+	            try {
+	                con.createStatement().executeUpdate("CREATE TABLE IF NOT EXISTS " + table +" (Name VARCHAR(100), UUID VARCHAR(100), PlayedRounds int,  Kills int, Tode int, Points int);");
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	    }
+
+
+	    public static void update(String qry) {
+	        try {
+	            java.sql.Statement st = con.createStatement();
+	            st.executeUpdate(qry);
+	            st.close();
+	        } catch (SQLException e) {
+	            connect();
+	            System.err.println(e);
+	        }
+	    }
+
+
+	    public static ResultSet getResult(String qry) {
+	        if(isConnected()) {
+	            try {
+	                return con.createStatement().executeQuery(qry);
+	            } catch (SQLException e) {
+	                e.printStackTrace();
+	            }
+	        }
+	        return null;
+	    }
+	
+}
