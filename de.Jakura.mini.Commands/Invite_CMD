@@ -1,0 +1,247 @@
+package de.Jakura.mini.Commands;
+
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import de.Jakura.mini.APIs.LocationAPI;
+import de.Jakura.mini.Main.main;
+import de.Jakura.mini.Utils.Utils;
+
+public class Invite_CMD implements CommandExecutor {
+
+	int invtime = 21;
+	
+	int sched;
+	int t = 11;
+	 
+	private main main;
+	
+	public Invite_CMD(main main) {
+		this.main = main;
+	}
+	
+	
+	
+	@SuppressWarnings({"static-access" })
+	@Override
+	public boolean onCommand( CommandSender s,  Command cmd,  String arg2, String[] args) {
+		
+		
+		
+		if(s instanceof Player) {
+			
+			Player p = (Player) s;
+			
+			if(cmd.getName().equalsIgnoreCase("accept")) {
+				
+				if(main.Invite.contains(p.getName())) {
+					
+					String pn = args[0];
+					
+					Player p2 = Bukkit.getPlayerExact(pn);
+					
+					if(main.Invite.contains(p2.getName())) {
+						
+						if(!(p == p2)) {
+							
+							p.sendMessage(main.prefix + "§aDu hast die Anfrage von §e" + p2.getName() + " §aangenommen!");
+							p2.sendMessage(main.prefix + "§e" + p.getName() + " §ahat deine Anfrage angenommen!");
+							
+							main.Invite.remove(p.getName());
+							main.Invite.remove(p2.getName());
+							
+							p.sendMessage(main.prefix + "§6Du bist nun mit §e" + p2.getName() + " §6in einem 1 gegen 1 Match. Das Spiel endet wen einer Tod ist. §aGood Luck §6&§a Have Fun");
+							p2.sendMessage(main.prefix + "§6Du bist nun mit §e" + p.getName() + " §6in einem 1 gegen 1 Match. Das Spiel endet wen einer Tod ist. §aGood Luck §6&§a Have Fun");
+							
+							p.teleport(LocationAPI.getLocation("1v1spawn2"));
+							p2.teleport(LocationAPI.getLocation("1v1spawn1"));
+							
+							
+							main.inVor.add(p.getName());
+							main.inVor.add(p2.getName());
+							
+							if(main.inVor.size() == 2) {
+								startTimer(p, p2);
+							}
+							
+						} else {
+							
+						}
+					} else {
+						p.sendMessage(main.prefix + "§cDu hast keine Anfrage von " + p2.getName() + " erhalten.");
+					}
+					
+					
+					
+				} else {
+					return true;
+				}
+				
+			}
+			
+			
+			if(cmd.getName().equalsIgnoreCase("deny")) {
+				
+				if(main.Invite.contains(p.getName())) {
+					
+					String pn = args[0];
+					
+					Player p2 = Bukkit.getPlayerExact(pn);
+					
+					if(main.Invite.contains(p2.getName())) {
+						
+						if(!(p == p2)) {
+							
+							p.sendMessage(main.prefix + "§cDu hast die Anfrage von §e" + p2.getName() + " §cAbgelehnt!");
+							p2.sendMessage(main.prefix + "§e" + p.getName() + " §chat deine Anfrage Abgelehnt!");
+							
+							main.Invite.remove(p.getName());
+							main.Invite.remove(p2.getName());
+							
+							main.inVor.remove(p.getName());
+							main.inVor.remove(p2.getName());
+							
+						} else {
+							
+						}
+					} else {
+						p.sendMessage(main.prefix + "§cDu hast keine Anfrage von " + p2.getName() + " erhalten.");
+					}
+					
+					
+					
+				} else {
+					return true;
+				}
+				
+			}
+			
+			
+			if(cmd.getName().equalsIgnoreCase("invite")) {
+				
+				if(args.length == 1) {
+					String pn = args[0];
+					
+					Player p2 = Bukkit.getPlayerExact(pn);
+					
+					if(!(p2 == p)) {
+						
+						if(!(p2 == null)) {
+							
+							//Utils.invitePlayer(p, p2);
+							
+							p.sendMessage(main.prefix +"§aDu hast §e" + p2.getName() + " §azu einem §61vs1 §aeingeladen. Warte bis die Anfrage akzeptiert wurde.");
+							
+							
+							p2.sendMessage(main.prefix +"§aDu wurdest von §e" + p.getName() + " §a§azu einem §61vs1 §aeingeladen. Gebe §6/accept " + p.getName() + " §aein um die"
+								+ " anfrage anzunehmen und §6/deny " + p.getName() + " §aum die Anfrage Abzulehnen");
+							
+								//sender.sendMessage(main.prefix + "§6Der Spieler §e" + empfanger.getName() + " §6ist nicht Online!");
+							
+							
+							
+							main.Invite.add(p.getName());
+							main.Invite.add(p2.getName());
+							
+							
+							new BukkitRunnable() {
+
+								@Override
+								public void run() {
+
+									invtime--;
+									
+									if(invtime == 0) {
+										
+										if(main.Invite.contains(p.getName()) && main.Invite.contains(p2.getName())) {
+											
+											p.sendMessage(main.prefix + "§cDie Anfrage wurde abgebrochen!");
+											
+											p2.sendMessage(main.prefix + "§cDie Anfrage wurde abgebrochen!");
+											
+											main.Invite.remove(p.getName());
+											main.Invite.remove(p2.getName());
+										}
+									}
+								}
+
+							}.runTaskTimer((main), 0, 25);
+							
+							
+						} else {
+							p.sendMessage(main.prefix + "§cDer Spieler §6" + pn +" §cIst nicht online!");
+						}
+						
+					} else {
+						p.sendMessage(main.prefix + "§cDu kannst dich nicht selber einladen!");
+					}
+					
+				}
+				
+			}
+			
+			
+		} else {
+			s.sendMessage(main.prefix + "§cDu musst ein Spieler Sein!");
+		}
+		
+		return false;
+	}
+
+	
+	public void startTimer(Player p1, Player p2) {
+		
+		
+		if(!Bukkit.getScheduler().isCurrentlyRunning(sched)) {
+			sched = Bukkit.getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {
+				
+				
+				
+				@SuppressWarnings("static-access")
+				@Override
+				public void run() {
+					t--;
+					
+					if(t == 10 || t == 5 || t == 4 || t == 3 || t == 2 || t == 1) {
+						
+						
+						if(main.inVor.size() == 2) {
+							p1.sendMessage(main.prefix + "§aDas Match Beginnt in §e" + t + (t == 1 ? " §csekunde." : " §6sekunden."));
+							p2.sendMessage(main.prefix + "§aDas Match Beginnt in §e" + t + (t == 1 ? " §csekunde." : " §6sekunden."));
+						} else {
+							Bukkit.getScheduler().cancelTask(sched);
+							p1.sendMessage(main.prefix + "§cDas Match wurde abgebrochen da ein Spieler Das Macht verlassen hat.");
+							p2.sendMessage(main.prefix + "§cDas Match wurde abgebrochen da ein Spieler Das Macht verlassen hat.");
+							
+							main.inVor.remove(p1.getName());
+							main.inVor.remove(p2.getName());
+						}
+						
+					}
+					if(t == 0) {
+						Bukkit.getScheduler().cancelTask(sched);
+						
+						p1.sendMessage(main.prefix + "§aDas Match hat begonnen!");
+						p2.sendMessage(main.prefix + "§aDas Match hat begonnen!");
+						
+						main.inVor.remove(p1.getName());
+						main.inVor.remove(p2.getName());
+						
+						
+						main.inGame.add(p1.getName());
+						main.inGame.add(p2.getName());
+						
+						Utils.Startgame(p1, p2);
+					}
+				}
+			}, 20, 20);
+		}
+		
+		
+	}
+	
+}
