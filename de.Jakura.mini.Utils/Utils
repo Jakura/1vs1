@@ -1,0 +1,129 @@
+package de.Jakura.mini.Utils;
+
+
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
+
+import de.Jakura.mini.APIs.LocationAPI;
+import de.Jakura.mini.Main.main;
+
+public class Utils {
+
+	
+	static int sched;
+	static int t = 11;
+	
+	
+	static int inv;
+	static int invtime = 21;
+	
+	public static main main;
+	
+	@SuppressWarnings("static-access")
+	public Utils(main main) {
+		this.main = main;
+	}
+	
+	@SuppressWarnings("static-access")
+	public static void Spawn1vs1(Player p1, Player p2) {
+		
+		p1.sendMessage(main.prefix + "§6Du bist nun mit §e" + p2.getName() + " §6in einem 1 gegen 1 Match. Das Spiel endet wen einer Tod ist. §aGood Luck §6&§a Have Fun");
+		p2.sendMessage(main.prefix + "§6Du bist nun mit §e" + p1.getName() + " §6in einem 1 gegen 1 Match. Das Spiel endet wen einer Tod ist. §aGood Luck §6&§a Have Fun");
+		
+		p1.teleport(LocationAPI.getLocation("1v1spawn2"));
+		p2.teleport(LocationAPI.getLocation("1v1spawn1"));
+		
+		
+		p1.setHealth(20);
+		p1.setFoodLevel(20);
+		
+		p2.setHealth(20);
+		p2.setFoodLevel(20);
+		
+		main.inVor.add(p1.getName());
+		main.inVor.add(p2.getName());
+		
+		if(main.inVor.size() == 2) {
+			
+		}
+		
+	}
+	
+	
+	@SuppressWarnings("static-access")
+	public static void invitePlayer(Player sender, Player empfanger) {
+		
+		sender.sendMessage(main.prefix +"§aDu hast §e" + empfanger.getName() + " §azu einem §61vs1 §aeingeladen. Warte bis die Anfrage akzeptiert wurde.");
+		
+		
+		empfanger.sendMessage(main.prefix +"§aDu wurdest von §e" + sender.getName() + " §a§azu einem §61vs1 §aeingeladen. Gebe §6/accept " + sender.getName() + " §aein um die"
+			+ " anfrage anzunehmen und §6/deny " + sender.getName() + " §aum die Anfrage Abzulehnen");
+		
+			//sender.sendMessage(main.prefix + "§6Der Spieler §e" + empfanger.getName() + " §6ist nicht Online!");
+		
+		
+		
+		main.Invite.add(sender.getName());
+		main.Invite.add(empfanger.getName());
+	}
+	
+	
+	public static void startTimer(Player p1, Player p2) {
+		
+		
+		if(!Bukkit.getScheduler().isCurrentlyRunning(sched)) {
+			sched = Bukkit.getScheduler().scheduleSyncRepeatingTask(main, new Runnable() {
+				
+				
+				
+				@SuppressWarnings("static-access")
+				@Override
+				public void run() {
+					t--;
+					
+					if(t == 10 || t == 5 || t == 4 || t == 3 || t == 2 || t == 1) {
+						
+						
+						if(main.inVor.size() == 2) {
+							p1.sendMessage(main.prefix + "§aDas Match Beginnt in §e" + t + (t == 1 ? " §csekunde." : " §6sekunden."));
+							p2.sendMessage(main.prefix + "§aDas Match Beginnt in §e" + t + (t == 1 ? " §csekunde." : " §6sekunden."));
+						} else {
+							Bukkit.getScheduler().cancelTask(sched);
+							p1.sendMessage(main.prefix + "§cDas Match wurde abgebrochen da ein Spieler Das Macht verlassen hat.");
+							p2.sendMessage(main.prefix + "§cDas Match wurde abgebrochen da ein Spieler Das Macht verlassen hat.");
+							
+							main.inVor.remove(p1.getName());
+							main.inVor.remove(p2.getName());
+						}
+						
+					}
+					if(t == 0) {
+						Bukkit.getScheduler().cancelTask(sched);
+						
+						p1.sendMessage(main.prefix + "§aDas Match hat begonnen!");
+						p2.sendMessage(main.prefix + "§aDas Match hat begonnen!");
+						
+						main.inVor.remove(p1.getName());
+						main.inVor.remove(p2.getName());
+						
+						
+						main.inGame.add(p1.getName());
+						main.inGame.add(p2.getName());
+					}
+				}
+			}, 20, 20);
+		}
+		
+		
+	}
+	
+	public static void Startgame(Player p1, Player p2) {
+		
+		p1.setGameMode(GameMode.SURVIVAL);
+		p2.setGameMode(GameMode.SURVIVAL);
+		
+		
+		}
+	}
+
