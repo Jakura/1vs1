@@ -1,0 +1,29 @@
+package de.Jakura.mini.Events;
+
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+
+import de.Jakura.mini.Main.main;
+import de.Jakura.mini.MySQL.MySQL_Stats;
+
+public class JoinListener implements Listener {
+
+	private main main;
+	
+	public JoinListener(main main) {
+		this.main = main;
+		this.main.getServer().getPluginManager().registerEvents(this, main);
+	}
+	
+	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent e) {
+		
+		Player p = e.getPlayer();
+		
+		MySQL_Stats.createPlayerwithuuid(p);
+		
+	}
+}
