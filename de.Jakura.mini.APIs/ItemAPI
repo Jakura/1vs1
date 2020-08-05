@@ -1,0 +1,88 @@
+package de.Jakura.mini.APIs;
+
+import java.util.ArrayList;
+
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+public class ItemAPI {
+
+	
+	@SuppressWarnings("deprecation")
+	public static ItemStack createItemWith(Material mat, int i, int b, String dn) {
+ 		
+ 		ItemStack item = new ItemStack(mat , i ,(byte) b);
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(dn);
+		item.setItemMeta(meta);
+ 		
+ 		return item;
+ 	}
+ 	public static ItemStack createItem(Material mat, String dn) {
+ 		
+ 		ItemStack item = new ItemStack(mat);
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(dn);
+		item.setItemMeta(meta);
+ 		
+ 		return item;
+ 	}
+ 	@SuppressWarnings("deprecation")
+	public static ItemStack createItemWithLoreandbyte(Material mat,int i, int b, String dn, String lore) {
+ 		
+ 		
+		ItemStack item = new ItemStack(mat , i ,(byte) b);
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(dn);
+		ArrayList<String> lor = new ArrayList<String>();
+		lor.add(lore);
+		meta.setLore(lor);
+		item.setItemMeta(meta);
+ 		
+ 		return item;
+ 	}
+ 	
+ 	public static ItemStack createItemWithLore(Material mat, String dn, String lore) {
+ 		
+ 		ItemStack item = new ItemStack(mat);
+		ItemMeta meta = item.getItemMeta();
+		meta.setDisplayName(dn);
+		ArrayList<String> lor = new ArrayList<String>();
+		lor.add(lore);
+		meta.setLore(lor);
+		item.setItemMeta(meta);
+ 		
+ 		return item;
+ 	}
+ 	
+ 	public static ItemStack createItemWithFlagsAndLore(Material mat, String dn, String lore) {
+ 		
+ 		ItemStack item = new ItemStack(mat);
+        ItemMeta meta = item.getItemMeta();
+        meta.addEnchant(org.bukkit.enchantments.Enchantment.DAMAGE_ALL, 1, true);
+        meta.addItemFlags(new ItemFlag[] { ItemFlag.HIDE_ENCHANTS });
+        ArrayList<String> lore1 = new ArrayList<String>();
+		lore1.add(lore);
+		meta.setLore(lore1);
+        meta.setDisplayName(dn);
+        item.setItemMeta(meta);
+ 		
+ 		return item;
+ 	}
+ 	public static ItemStack createItemWithEnch(Material mat, String dn, String lore, org.bukkit.enchantments.Enchantment ench, int dur) {
+ 		
+ 		ItemStack item = new ItemStack(mat);
+        ItemMeta meta = item.getItemMeta();
+        meta.addEnchant(ench, dur, true);
+        ArrayList<String> lore1 = new ArrayList<String>();
+		lore1.add(lore);
+		meta.setLore(lore1);
+        meta.setDisplayName(dn);
+        item.setItemMeta(meta);
+ 		
+ 		return item;
+ 	}
+	
+}
