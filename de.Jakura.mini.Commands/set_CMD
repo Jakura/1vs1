@@ -1,0 +1,60 @@
+package de.Jakura.mini.Commands;
+
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import de.Jakura.mini.APIs.LocationAPI;
+import de.Jakura.mini.Main.main;
+
+public class set_CMD implements CommandExecutor {
+
+	
+
+	private main main;
+
+	public set_CMD(main main) {
+		this.main = main;
+	}
+
+	@Override
+	public boolean onCommand(CommandSender s,  Command cmd,  String arg2, String[] args) {
+		
+		if(s instanceof Player) {
+			
+			Player p = (Player) s;
+			
+			if(args.length == 1) {
+				
+				if(p.isOp()) {
+					
+					if(args[0].equalsIgnoreCase("1")) {
+						p.sendMessage(main.prefix + "§aDu hast den §61 §aSpawn gesetz!");
+						
+						LocationAPI.setLocation("1v1spawn1", p);
+						
+					}
+					
+					if(args[0].equalsIgnoreCase("2")) {
+						p.sendMessage(main.prefix + "§aDu hast den §62 §aSpawn gesetz!");
+						
+						LocationAPI.setLocation("1v1spawn2", p);
+					}
+					
+				} else {
+					p.sendMessage("§c§lDu hast keine Rechte für diesen Befehl!");
+				}
+				
+			} else {
+				p.sendMessage(main.prefix + "§cBitte nutze §6/setloc <1 | 2>");
+			}
+			
+			
+		} else {
+			s.sendMessage("§cDu musst ein Spieler sein!");
+		}
+		
+		return false;
+	}
+}
