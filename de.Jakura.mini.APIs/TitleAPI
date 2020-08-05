@@ -1,0 +1,48 @@
+package de.Jakura.mini.APIs;
+
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.entity.Player;
+
+import net.minecraft.server.v1_15_R1.IChatBaseComponent;
+import net.minecraft.server.v1_15_R1.PacketPlayOutTitle;
+import net.minecraft.server.v1_15_R1.PlayerConnection;
+
+
+public class TitleAPI {
+
+public static void sentTitle(Player p, String title) {
+		
+        PlayerConnection connection = ((CraftPlayer) p.getPlayer()).getHandle().playerConnection;
+        IChatBaseComponent text = IChatBaseComponent.ChatSerializer.a(" [\"\",{\"text\":\"" + title +"\"}]");
+        PacketPlayOutTitle packet1 = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.TITLE, text, 1, 5, 1);
+        connection.sendPacket(packet1);
+		
+	}
+	
+	public static void sentActionbar(Player p, String title) {
+		
+        PlayerConnection connection = ((CraftPlayer) p.getPlayer()).getHandle().playerConnection;
+        IChatBaseComponent text = IChatBaseComponent.ChatSerializer.a(" [\"\",{\"text\":\"" + title +"\"}]");
+        PacketPlayOutTitle packet = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.ACTIONBAR, text, 1, 5, 1);
+        connection.sendPacket(packet);
+		
+	}
+	
+	public static void sendSubTitle(Player p, String title) {
+		
+        PlayerConnection connection = ((CraftPlayer) p.getPlayer()).getHandle().playerConnection;
+        IChatBaseComponent text = IChatBaseComponent.ChatSerializer.a(" [\"\",{\"text\":\"" + title +"\"}]");
+        PacketPlayOutTitle packet = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.SUBTITLE, text, 1, 5, 1);
+        connection.sendPacket(packet);
+		
+	}
+	public static void Reset(Player p) {
+		
+        PlayerConnection connection = ((CraftPlayer) p.getPlayer()).getHandle().playerConnection;
+        IChatBaseComponent text = IChatBaseComponent.ChatSerializer.a(" [\"\",{\"text\":\"\"}]");
+        PacketPlayOutTitle packet = new PacketPlayOutTitle(PacketPlayOutTitle.EnumTitleAction.CLEAR, text, 1, 5, 1);
+        connection.sendPacket(packet);
+		
+	}
+	
+}
