@@ -1,0 +1,8 @@
+Prefix: '&7[&61vs1&7]&r '
+MySQL:
+  Activated: true
+  Hostname: 'Hostname'
+  Port: 'Port'
+  Database: 'Database'
+  Password: 'Password'
+  Username: 'Username'
